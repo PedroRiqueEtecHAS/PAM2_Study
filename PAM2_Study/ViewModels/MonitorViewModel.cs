@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using PAM2_Study.Services;
+using PAM2_Study.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,8 +12,12 @@ namespace PAM2_Study.ViewModels
 {
     public partial class MonitorViewModel:ObservableObject
     {
-        ObservableCollection<Monitor> Monitores { get; set; };
-        private readonly MonitorViewModel monitorService;
-        [ObservableObject]
+        [ObservableProperty]
+        private ObservableCollection<Models.Monitor> monitores;
+
+        public async void getMonitores()
+        {
+            monitores = await new MonitorService().getAllMonitorsAsync();
+        }
     }
 }

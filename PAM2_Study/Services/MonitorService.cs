@@ -17,6 +17,8 @@ namespace PAM2_Study.Services
         private HttpClient client;
         private ObservableCollection<Models.Monitor> monitors;
         private JsonSerializerOptions serializerOptions;
+        private Uri uri;
+ 
 
         public MonitorService() {
             client = new HttpClient();
@@ -26,6 +28,39 @@ namespace PAM2_Study.Services
                 WriteIndented = true
             };
 
+        }
+
+        public async Task<Models.Monitor> UpdateMonitorAsync(Models.Monitor monitor)
+        {
+            return monitor; 
+        }
+
+        public async Task<Models.Monitor> GetMonitorsByIdAsync(long id)
+        {
+            uri = new Uri($"LOCALDOSERVIDOR:8080/MONITORES/{id}");
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    monitor = JsonSerializer.Deserialize<Models.Monitor>(content, serializerOptions);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+
+            return monitor;
+        }
+
+
+        public async Task DeleteMonitorAsync(long id)
+        {
+            uri = new Uri($"LOCALDOSERVIDOR:8080/MONITORES/{id}");
+            
+            await client.DeleteAsync(uri);
         }
 
         public async Task<ObservableCollection<Models.Monitor>> getAllMonitorsAsync()
